@@ -16,6 +16,7 @@ header {
  .row {
     display: flex;
     flex-wrap: wrap;
+    text-align: center;
  }
  .post-text-box {
     flex: 70%;
