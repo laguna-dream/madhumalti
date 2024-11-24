@@ -19,11 +19,11 @@ header {
     text-align: center;
  }
  .post-text-box {
-    flex: 70%;
+    flex: 50%;
     padding: 20px;
  }
  .profile {
-    flex: 70%;
+    flex: 20%;
     padding: 20px;
  }
  /*profile image and heading style*/
