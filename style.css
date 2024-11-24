@@ -14,12 +14,10 @@ header {
     box-sizing: border-box;
  }
  .row {
-    display: flex;
-    flex-wrap: wrap;
+
     text-align: center;
  }
  .post-text-box {
-    flex: 50%;
     padding: 20px;
  }
  .profile {
