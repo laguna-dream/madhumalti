@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>scrapbook tool</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      padding: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fafaf8;
+    }
+    h1 { font-size: 1rem; font-weight: normal; letter-spacing: 1px; }
+    .drop-zone {
+      border: 2px dashed #ccc;
+      border-radius: 6px;
+      padding: 40px;
+      text-align: center;
+      color: #999;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drop-zone.dragover {
+      border-color: blue;
+      background: #f0f4ff;
+    }
+    .preview {
+      position: relative;
+      width: 860px;
+      min-height: 400px;
+      margin: 24px auto;
+      background: #f5f3ef;
+      border-radius: 4px;
+      display: none;
+    }
+    .preview.has-items { display: block; }
+    .preview-img {
+      position: absolute;
+      border: 6px solid #fff;
+      background: #fff;
+      cursor: move;
+    }
+    .preview-img .del {
+      position: absolute;
+      top: -8px; right: -8px;
+      width: 20px; height: 20px;
+      background: #e44;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 20px;
+      text-align: center;
+      display: none;
+    }
+    .preview-img:hover .del { display: block; }
+    .controls {
+      text-align: center;
+      margin: 16px 0;
+      display: none;
+    }
+    .controls.visible { display: block; }
+    button {
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 8px 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 6px;
+    }
+    button:hover { background: #f0f0f0; }
+    button.primary { background: blue; color: #fff; border-color: blue; }
+    button.primary:hover { background: #0000cc; }
+    .code-output {
+      display: none;
+      margin: 20px 0;
+    }
+    .code-output.visible { display: block; }
+    .code-output textarea {
+      width: 100%;
+      height: 300px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      padding: 16px;
+      white-space: pre;
+      tab-size: 2;
+    }
+    .code-output .copy-msg {
+      font-size: 0.8rem;
+      color: #090;
+      margin-top: 6px;
+      display: none;
+    }
+    .file-list {
+      font-size: 0.8rem;
+      color: #666;
+      margin: 8px 0;
+      text-align: center;
+    }
+    .help-text {
+      font-size: 0.8rem;
+      color: #999;
+      text-align: center;
+      margin: 8px 0;
+    }
+    .layer-badge {
+      position: absolute;
+      bottom: 4px; left: 4px;
+      font-size: 0.6rem;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>scrapbook tool</h1>
+  <p class="help-text">drag images from your computer onto the drop zone below. arrange them visually, then copy the generated HTML code. the code assumes images live in <code>assets/scrapbook/</code> — make sure to copy them there too.</p>
+
+  <div class="drop-zone" id="dropzone">
+    drop images here
+  </div>
+
+  <div class="file-list" id="fileList"></div>
+
+  <div class="preview" id="preview"></div>
+
+  <div class="controls" id="controls">
+    <button class="primary" onclick="generateCode()">generate HTML</button>
+  </div>
+
+  <div class="code-output" id="codeOutput">
+    <textarea id="codeText" readonly spellcheck="false"></textarea>
+    <button onclick="copyCode()">copy to clipboard</button>
+    <div class="copy-msg" id="copyMsg">copied!</div>
+  </div>
+
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const preview = document.getElementById('preview');
+    const fileList = document.getElementById('fileList');
+    const controls = document.getElementById('controls');
+    const codeOutput = document.getElementById('codeOutput');
+    const codeText = document.getElementById('codeText');
+    const copyMsg = document.getElementById('copyMsg');
+
+    let items = [];
+    let dragItem = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    const CONTAINER_W = 860;
+    const PADDING = 24;
+    const COLS = 3;
+    const CELL_W = (CONTAINER_W - PADDING * 2) / COLS;
+    const IMG_W = 220;
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files).filter(f => /\.(jpe?g|png|gif|webp)$/i.test(f.name));
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const isLayer1 = items.length % 2 === 0;
+          const col = isLayer1 ? items.length % COLS : items.length % (COLS - 1);
+          const row = Math.floor(items.length / (isLayer1 ? COLS : (COLS - 1)) / 2);
+          const x = isLayer1
+            ? PADDING + col * CELL_W + rand(5, CELL_W - IMG_W - 5)
+            : PADDING + col * CELL_W + CELL_W / 2 + rand(5, CELL_W - IMG_W - 5);
+          const y = isLayer1
+            ? PADDING + row * 280 + rand(0, 40)
+            : PADDING + row * 280 + 140 + rand(-20, 20);
+          const rot = rand(-5, 5);
+          items.push({
+            name: file.name,
+            dataUrl: ev.target.result,
+            x, y, w: IMG_W, rot,
+            layer: isLayer1 ? 1 : 2
+          });
+          render();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    preview.addEventListener('mousedown', e => {
+      const img = e.target.closest('.preview-img');
+      if (!img) return;
+      dragItem = img;
+      const rect = preview.getBoundingClientRect();
+      dragOffsetX = e.clientX - rect.left - parseFloat(img.style.left);
+      dragOffsetY = e.clientY - rect.top - parseFloat(img.style.top);
+      img.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!dragItem) return;
+      const rect = preview.getBoundingClientRect();
+      const idx = parseInt(dragItem.dataset.index);
+      const w = parseFloat(dragItem.style.width);
+      const h = dragItem.offsetHeight || 200;
+      let x = e.clientX - rect.left - dragOffsetX;
+      let y = e.clientY - rect.top - dragOffsetY;
+      x = Math.max(0, Math.min(CONTAINER_W - w, x));
+      y = Math.max(0, y);
+      items[idx].x = x;
+      items[idx].y = y;
+      dragItem.style.left = x + 'px';
+      dragItem.style.top = y + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (dragItem) { dragItem.style.cursor = 'move'; dragItem = null; }
+    });
+
+    function deleteItem(idx) {
+      items.splice(idx, 1);
+      render();
+    }
+
+    function toggleLayer(idx) {
+      items[idx].layer = items[idx].layer === 1 ? 2 : 1;
+      render();
+    }
+
+    function render() {
+      preview.innerHTML = '';
+      preview.classList.toggle('has-items', items.length > 0);
+      controls.classList.toggle('visible', items.length > 0);
+
+      fileList.textContent = items.length + ' image' + (items.length !== 1 ? 's' : '') +
+        ' — click × to remove, double-click to toggle layer';
+
+      items.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'preview-img';
+        div.dataset.index = i;
+        div.style.left = item.x + 'px';
+        div.style.top = item.y + 'px';
+        div.style.width = item.w + 'px';
+        div.style.transform = 'rotate(' + item.rot + 'deg)';
+        div.style.zIndex = item.layer === 1 ? 1 : 2;
+
+        const img = document.createElement('img');
+        img.src = item.dataUrl;
+        img.style.width = '100%';
+        img.style.display = 'block';
+
+        const del = document.createElement('button');
+        del.className = 'del';
+        del.textContent = '×';
+        del.onclick = (e) => { e.stopPropagation(); deleteItem(i); };
+
+        const badge = document.createElement('span');
+        badge.className = 'layer-badge';
+        badge.textContent = 'L' + item.layer;
+
+        div.appendChild(img);
+        div.appendChild(del);
+        div.appendChild(badge);
+        div.ondblclick = () => toggleLayer(i);
+        preview.appendChild(div);
+      });
+
+      // hide generated code when items change
+      codeOutput.classList.remove('visible');
+    }
+
+    function generateCode() {
+      const imgs = items.map(item => {
+        const src = '/assets/scrapbook/' + item.name;
+        const alt = item.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+        const style = 'left:' + item.x.toFixed(1) + 'px;top:' + item.y.toFixed(1) + 'px;width:' + item.w.toFixed(1) + 'px;transform:rotate(' + item.rot.toFixed(1) + 'deg)';
+        return '      <img src="' + src + '" alt="' + alt + '" class="scrapbook-item layer-' + item.layer + '" style="' + style + '" loading="lazy">';
+      }).join('\n');
+
+      let maxBottom = PADDING;
+      items.forEach(item => {
+        const b = item.y + (item.layer === 1 ? 340 : 260);
+        if (b > maxBottom) maxBottom = b;
+      });
+
+      const code = '<!-- paste this into the .scrapbook-container div in pages/scrapbook.html -->\n<!-- make sure the image files are in assets/scrapbook/ -->\n' + imgs;
+      codeText.value = code;
+      codeOutput.classList.add('visible');
+      copyMsg.style.display = 'none';
+    }
+
+    function copyCode() {
+      codeText.select();
+      document.execCommand('copy');
+      copyMsg.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

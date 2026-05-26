@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/shared.css">
+  <title>scrapbook - seafoam palace</title>
+  <style>
+    .scrapbook-page {
+      max-width: 900px;
+      margin: 40px auto;
+    }
+
+    .scrapbook-page h2 {
+      font-size: 0.95rem;
+      font-weight: normal;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .scrapbook-container {
+      position: relative;
+      width: 860px;
+      height: 463.00073387125985px;
+      margin: 0 auto;
+      user-select: none;
+    }
+
+    .scrapbook-item {
+      position: absolute;
+      border: 6px solid #fff;
+      background: #fff;
+      box-sizing: border-box;
+      height: auto;
+      touch-action: none;
+    }
+
+    .scrapbook-item.layer-1 {
+      z-index: 1;
+    }
+
+    .scrapbook-item.layer-2 {
+      z-index: 2;
+    }
+
+    body.dark-mode .scrapbook-item {
+      border-color: #2a2a2a;
+      background: #2a2a2a;
+    }
+
+    .scrapbook-empty {
+      font-size: 0.85rem;
+      color: #999;
+      text-align: center;
+      padding: 60px 0;
+    }
+
+    .scrapbook-empty code {
+      font-family: inherit;
+      background: #f0f0f0;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 940px) {
+      .scrapbook-container {
+        width: 100% !important;
+        height: auto !important;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        position: static;
+        padding: 10px 0;
+      }
+
+      .scrapbook-item {
+        position: static !important;
+        width: calc(50% - 10px) !important;
+        max-width: 280px !important;
+        transform: none !important;
+        border-width: 4px;
+        margin: 0;
+        cursor: default !important;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .scrapbook-item {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-nav"></div>
+  <script src="/js/nav.js"></script>
+
+  <div class="scrapbook-page">
+    <h2>scrapbook</h2>
+
+    <div class="scrapbook-container">
+      <img src="/assets/scrapbook/original_62d8dff6245747fc897eb0a3af49dd61.jpg"
+        alt="original 62d8dff6245747fc897eb0a3af49dd61" class="scrapbook-item layer-1"
+        style="left:66.6px;top:34.1px;width:220.0px;transform:rotate(-1.3deg)" loading="lazy">
+      <img src="/assets/scrapbook/cat.jpg" alt="cat" class="scrapbook-item layer-2"
+        style="left:176.7px;top:179.0px;width:220.0px;transform:rotate(-1.7deg)" loading="lazy">
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var container = document.querySelector('.scrapbook-container');
+      if (!container) return;
+      var items = container.querySelectorAll('.scrapbook-item');
+      var dragTarget = null, offsetX, offsetY;
+
+      function moveAt(clientX, clientY) {
+        var rect = container.getBoundingClientRect();
+        var x = clientX - rect.left - offsetX;
+        var y = clientY - rect.top - offsetY;
+        var maxX = rect.width - dragTarget.offsetWidth;
+        var maxY = rect.height - dragTarget.offsetHeight;
+        x = Math.max(0, Math.min(maxX, x));
+        y = Math.max(0, Math.min(maxY, y));
+        dragTarget.style.left = x + 'px';
+        dragTarget.style.top = y + 'px';
+      }
+
+      function onStart(e) {
+        dragTarget = e.currentTarget;
+        var rect = container.getBoundingClientRect();
+        var cx = e.clientX || e.touches[0].clientX;
+        var cy = e.clientY || e.touches[0].clientY;
+        var left = parseFloat(dragTarget.style.left) || 0;
+        var top = parseFloat(dragTarget.style.top) || 0;
+        offsetX = cx - rect.left - left;
+        offsetY = cy - rect.top - top;
+        dragTarget.style.zIndex = 999;
+        dragTarget.style.cursor = 'grabbing';
+        e.preventDefault();
+      }
+
+      function onMove(e) {
+        if (!dragTarget) return;
+        var cx = e.clientX || e.touches[0].clientX;
+        var cy = e.clientY || e.touches[0].clientY;
+        moveAt(cx, cy);
+        e.preventDefault();
+      }
+
+      function onEnd() {
+        if (dragTarget) {
+          dragTarget.style.cursor = 'grab';
+          dragTarget = null;
+        }
+      }
+
+      items.forEach(function (img) {
+        img.style.cursor = 'grab';
+        img.addEventListener('mousedown', onStart);
+        img.addEventListener('touchstart', onStart, { passive: false });
+      });
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchend', onEnd);
+    })();
+  </script>
+</body>
+
+</html>

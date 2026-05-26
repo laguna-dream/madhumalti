@@ -5,7 +5,8 @@
   "scripts": {
     "rss": "node build-rss.js",
     "archive": "node archive-bookshelf.js",
-    "build": "node build-rss.js && node archive-bookshelf.js"
+    "build": "node build-rss.js && node archive-bookshelf.js",
+    "scrapbook": "node build-scrapbook.js"
   },
   "author": "simar",
   "license": "MIT"
