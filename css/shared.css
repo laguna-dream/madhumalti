@@ -61,51 +61,21 @@ body.dark-mode iframe {
 }
 
 /* -- header & nav -- */
-@font-face {
-    font-family: 'FlorDeRuina';
-    src: url('/fonts/FlorDeRuina-Germen.ttf') format('truetype');
-}
-
 header {
     text-align: center;
     padding: 20px;
 }
 
 .site-title {
-    position: relative;
-    display: inline-block;
-    font-family: 'FlorDeRuina', 'Times New Roman', serif;
-    font-size: 5.5rem;
-    line-height: 1;
     margin: 0;
-    white-space: nowrap;
-    cursor: default;
-    user-select: none;
 }
 
-.site-title-shadow,
-.site-title-front {
+.site-title-img {
     display: block;
-    white-space: nowrap;
-    transition: transform 0.3s ease;
-}
-
-.site-title-shadow {
-    position: absolute;
-    top: 9px;
-    left: 9px;
-    color: #FF5CE9;
-    z-index: 0;
-}
-
-.site-title-front {
-    position: relative;
-    color: blue;
-    z-index: 1;
-}
-
-body.dark-mode .site-title-front {
-    color: #6b9bd1;
+    margin: 0 auto;
+    max-width: 90%;
+    height: auto;
+    width: 720px;
 }
 
 nav {

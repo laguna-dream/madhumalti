@@ -7,8 +7,7 @@
     <button class="dark-mode-toggle" id="dark-mode-toggle">☾</button>
     <header>
         <h1 class="site-title">
-            <span class="site-title-shadow" aria-hidden="true">ecalap maofaes</span>
-            <span class="site-title-front">seafoam palace</span>
+            <img src="/assets/title.png" alt="seafoam palace" class="site-title-img">
         </h1>
     </header>
     <nav>
@@ -46,26 +45,6 @@
         localStorage.setItem('darkMode', darkModeEnabled);
         toggleBtn.textContent = darkModeEnabled ? '☀' : '☾';
     });
-
-    // header hover wobble — shadow layer drifts further than the front layer
-    const siteTitle = document.querySelector('.site-title');
-    const titleFront = siteTitle?.querySelector('.site-title-front');
-    const titleShadow = siteTitle?.querySelector('.site-title-shadow');
-
-    if (siteTitle && titleFront && titleShadow) {
-        siteTitle.addEventListener('mousemove', (e) => {
-            const rect = siteTitle.getBoundingClientRect();
-            const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
-            const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-            titleFront.style.transform = `translate(${x * 5}px, ${y * 5}px)`;
-            titleShadow.style.transform = `translate(${-x * 9}px, ${-y * 9}px)`;
-        });
-
-        siteTitle.addEventListener('mouseleave', () => {
-            titleFront.style.transform = 'translate(0px, 0px)';
-            titleShadow.style.transform = 'translate(0px, 0px)';
-        });
-    }
 })();
 
 //        <a href="/pages/notebook.html">notebook</a>
