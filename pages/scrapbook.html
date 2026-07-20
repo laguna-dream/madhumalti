@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +21,7 @@
     .scrapbook-container {
       position: relative;
       width: 860px;
-      height: 463.00073387125985px;
+      height: 449.64778673413093px;
       margin: 0 auto;
       user-select: none;
     }
@@ -36,13 +35,8 @@
       touch-action: none;
     }
 
-    .scrapbook-item.layer-1 {
-      z-index: 1;
-    }
-
-    .scrapbook-item.layer-2 {
-      z-index: 2;
-    }
+    .scrapbook-item.layer-1 { z-index: 1; }
+    .scrapbook-item.layer-2 { z-index: 2; }
 
     body.dark-mode .scrapbook-item {
       border-color: #2a2a2a;
@@ -74,7 +68,6 @@
         position: static;
         padding: 10px 0;
       }
-
       .scrapbook-item {
         position: static !important;
         width: calc(50% - 10px) !important;
@@ -94,25 +87,23 @@
     }
   </style>
 </head>
-
 <body>
   <div id="site-nav"></div>
   <script src="/js/nav.js"></script>
 
   <div class="scrapbook-page">
     <h2>scrapbook</h2>
-
+    
     <div class="scrapbook-container">
-      <img src="/assets/scrapbook/original_62d8dff6245747fc897eb0a3af49dd61.jpg"
-        alt="original 62d8dff6245747fc897eb0a3af49dd61" class="scrapbook-item layer-1"
-        style="left:66.6px;top:34.1px;width:220.0px;transform:rotate(-1.3deg)" loading="lazy">
-      <img src="/assets/scrapbook/cat.jpg" alt="cat" class="scrapbook-item layer-2"
-        style="left:176.7px;top:179.0px;width:220.0px;transform:rotate(-1.7deg)" loading="lazy">
+      <img src="/assets/scrapbook/cat.jpg" alt="cat" class="scrapbook-item layer-1" style="left:64.9px;top:50.8px;width:220.0px;transform:rotate(2.5deg)" loading="lazy">
+      <img src="/assets/scrapbook/rightalong.jpeg" alt="rightalong" class="scrapbook-item layer-1" style="left:328.6px;top:36.1px;width:220.0px;transform:rotate(0.5deg)" loading="lazy">
+      <img src="/assets/scrapbook/original_62d8dff6245747fc897eb0a3af49dd61.jpg" alt="original 62d8dff6245747fc897eb0a3af49dd61" class="scrapbook-item layer-2" style="left:203.4px;top:165.6px;width:220.0px;transform:rotate(-1.2deg)" loading="lazy">
+      <img src="/assets/scrapbook/flowers.jpg" alt="flowers" class="scrapbook-item layer-2" style="left:471.9px;top:164.3px;width:220.0px;transform:rotate(-2.9deg)" loading="lazy">
     </div>
   </div>
-
+  
   <script>
-    (function () {
+    (function() {
       var container = document.querySelector('.scrapbook-container');
       if (!container) return;
       var items = container.querySelectorAll('.scrapbook-item');
@@ -159,7 +150,7 @@
         }
       }
 
-      items.forEach(function (img) {
+      items.forEach(function(img) {
         img.style.cursor = 'grab';
         img.addEventListener('mousedown', onStart);
         img.addEventListener('touchstart', onStart, { passive: false });
@@ -172,5 +163,4 @@
     })();
   </script>
 </body>
-
 </html>

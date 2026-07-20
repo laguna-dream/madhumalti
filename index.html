@@ -205,27 +205,219 @@
 
         /* -- in the works box -- */
         .section.todo {
-            width: 700px;
-            margin-left: -205px;
-            border: 1px solid #ccc;
+            width: min(340px, calc(100vw - 40px));
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1px solid blue;
             padding: 14px 18px;
-            background: #f9f9f7;
+            background: rgba(255, 92, 233, 0.12);
+            box-shadow: 3px 3px 0 rgba(0, 0, 255, 0.35);
             box-sizing: border-box;
-            display: flex;
-            gap: 20px;
-        }
-
-        .noticeboard-text {
-            flex: 1;
+            margin-bottom: 20px;
         }
 
         .noticeboard-images {
-            width: 250px;
+            margin-top: 12px;
         }
 
         .noticeboard-images img {
             max-width: 100%;
             border-radius: 4px;
+            display: block;
+        }
+
+        body.dark-mode .section.todo {
+            background: #1a1a1a;
+            border-color: #6b9bd1;
+        }
+
+        /* -- music player widget -- */
+        @font-face {
+            font-family: 'Hibiscus';
+            src: url('fonts/Hibiscus.ttf') format('truetype');
+        }
+
+        .player-widget {
+            max-width: 340px;
+            margin: 0 auto 32px;
+        }
+
+        .player-box {
+            border: 1px solid blue;
+            box-sizing: border-box;
+            background: #fff;
+            box-shadow: 3px 3px 0 rgba(0, 0, 255, 0.35);
+        }
+
+        .player-flowerbox {
+            position: relative;
+            padding: 6px 3px;
+            margin-bottom: 8px;
+            overflow: visible;
+            cursor: default;
+            user-select: none;
+        }
+
+        .flower-shadow,
+        .flower-front {
+            display: block;
+            font-family: 'Hibiscus', serif;
+            font-size: 20px;
+            line-height: 1;
+            white-space: nowrap;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .flower-shadow {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 100%;
+            color: #FF5CE9;
+            z-index: 0;
+        }
+
+        .flower-front {
+            position: relative;
+            color: blue;
+            z-index: 1;
+        }
+
+        .player-yt {
+            display: none;
+        }
+
+        .player-controlbox {
+            padding: 8px 10px;
+            margin-bottom: 8px;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .player-btn {
+            background: #fff;
+            color: blue;
+            border: 1px solid blue;
+            font-family: inherit;
+            font-size: 0.8rem;
+            line-height: 1;
+            padding: 5px 9px;
+            cursor: pointer;
+        }
+
+        .player-btn:hover {
+            background: rgba(0, 0, 255, 0.08);
+        }
+
+        .player-progress {
+            flex: 1;
+            height: 10px;
+            border: 1px solid blue;
+            background: #fff;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .player-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #FF5CE9;
+        }
+
+        .player-track {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-track .track-dash {
+            flex: 1 1 auto;
+            border-top: 1px dashed #999;
+        }
+
+        .player-track .marquee-box {
+            position: relative;
+            flex: 0 1 auto;
+            max-width: 60%;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.78rem;
+            font-style: italic;
+            opacity: 0.55;
+        }
+
+        .player-track .marquee-inner {
+            display: inline-block;
+        }
+
+        .player-track .marquee-inner.scrolling {
+            animation: player-marquee linear infinite;
+        }
+
+        @keyframes player-marquee {
+            from {
+                transform: translateX(var(--start, 0px));
+            }
+
+            to {
+                transform: translateX(var(--end, 0px));
+            }
+        }
+
+        .player-tracklist {
+            max-height: 110px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .track-item {
+            font-size: 0.8rem;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+
+        .track-item:hover {
+            background: rgba(255, 92, 233, 0.1);
+        }
+
+        .track-item.playing {
+            background: rgba(255, 92, 233, 0.25);
+        }
+
+        .player-tracklist::-webkit-scrollbar {
+            display: none;
+        }
+
+        body.dark-mode .player-box {
+            background: #1a1a1a;
+            border-color: #6b9bd1;
+        }
+
+        body.dark-mode .player-progress {
+            background: #1a1a1a;
+            border-color: #6b9bd1;
+        }
+
+        body.dark-mode .player-btn {
+            background: #1a1a1a;
+            color: #6b9bd1;
+            border-color: #6b9bd1;
+        }
+
+        body.dark-mode .player-btn:hover {
+            background: rgba(107, 155, 209, 0.15);
+        }
+
+        body.dark-mode .player-track .track-dash {
+            border-top-color: #555;
         }
 
         /* -- credits -- */
@@ -341,6 +533,32 @@
     <p class="intro">hi, i'm simar. this website is under construction. here are a few things you can take a look at.
     </p>
 
+    <div class="player-widget" id="music-player">
+        <div class="player-box player-flowerbox">
+            <span class="flower-shadow" aria-hidden="true"></span>
+            <span class="flower-front"></span>
+        </div>
+        <div class="player-box player-controlbox">
+            <div id="yt-player" class="player-yt"></div>
+            <div class="player-controls">
+                <button class="player-btn" id="prev-btn" title="previous">◀◀</button>
+                <button class="player-btn" id="play-btn" title="play / pause">▶</button>
+                <button class="player-btn" id="next-btn" title="next">▶▶</button>
+                <div class="player-progress" id="player-progress">
+                    <div class="player-progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div class="player-track">
+                <span class="track-dash" aria-hidden="true"></span>
+                <span class="marquee-box" id="player-track"><span class="marquee-inner">track title -
+                        artist</span></span>
+                <span class="track-dash" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="player-box player-tracklist" id="track-list"></div>
+    </div>
+    <script src="/js/player.js"></script>
+
     <div class="page-content">
 
         <div class="links-section">
@@ -358,12 +576,9 @@
             </div>
 
             <div class="link-item">
-                <a href="https://www.youtube.com/watch?v=z5-Hya2Vn_M" target="_blank" rel="noopener noreferrer">video:
-
-                    The problem with using AI to help you learn (programming, and in general)</a>
-                <div class="caption">something i've been thinking about in my attempts to use ai to teach me things -
-                    how
-                    to preserve the ability to think, ask questions, and guide your own learning process
+                <a href="https://www.velvetyne.fr/" target="_blank" rel="noopener noreferrer">type website:
+                    velvetyne.fr</a>
+                <div class="caption">fun free open fonts
                 </div>
             </div>
 
@@ -371,7 +586,7 @@
                 <a href="https://youtu.be/cZO01n5gXRg?si=nOtEGDkhnIFdu3Sj" target="_blank"
                     rel="noopener noreferrer">music: Thievery Corporation - The Time We Lost Our Way (Live with
                     LouLou)</a>
-                <div class="caption">i discovered this track on my mother's nokia 5310. just discovered this live
+                <div class="caption">i discovered this track on my mother's nokia 5310. just found this live
                     version, i find
                     it as beautiful as i found the original song then.
                 </div>
@@ -380,13 +595,13 @@
             <div class="link-item">
                 <a href="https://www.are.na/olivia-m-r/starting-a-piracy-club" target="_blank"
                     rel="noopener noreferrer">channel: starting a piracy club</a>
-                <div class="caption">interesting are.na channel</div>
+                <div class="caption">just</div>
             </div>
 
             <div class="link-item">
-                <a href="https://youtu.be/ub37NsQp1ks?si=LMJxMiyAjyszaM2G" target="_blank"
-                    rel="noopener noreferrer">music: shadows (andrew weatherall mix)</a>
-                <div class="caption">currently very into soft female vocals.</div>
+                <a href="https://archive.org/details/oapen-20.500.12657-47509/" target="_blank"
+                    rel="noopener noreferrer">book: The Data Journalism Handbook - Towards a Critical Data Practice</a>
+                <div class="caption">perusing to see if this is something that interests me at all</div>
             </div>
 
         </div>
@@ -399,9 +614,10 @@
         <div class="section todo">
             <div class="noticeboard-text">
                 <b> noticeboard</b>
-                <i>updated 9th july 2026</i>
+                <i>updated 20th july 2026</i>
                 <small>
                     𓇙 in ashwem till august end
+                    <br>
                     𓇙 see more <a href="https://snake-moss.vercel.app/index.html">here.</a><br>
                 </small>
             </div>
@@ -454,6 +670,11 @@
                 const base = basePositions[i];
                 castle.style.transform = `translate(${base.x}px, ${base.y}px)`;
             });
+        });
+
+        // hovering the center ascii art (castle1, the scenery) starts the player
+        castles[0].addEventListener('mouseenter', () => {
+            window.LagunaPlayer?.play();
         });
     </script>
 
