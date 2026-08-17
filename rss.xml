@@ -3,6 +3,14 @@
   <channel>
     <title>seafoam palace</title>
     <link>https://laguna-dream.github.io</link>
+
+    <item>
+      <title>day note aug 17</title>
+      <link>https://laguna-dream.github.io/writing/weeknoteaug17.html</link>
+      <guid isPermaLink="true">https://laguna-dream.github.io/writing/weeknoteaug17.html</guid>
+      <pubDate>Mon, 17 Aug 2026 21:21:33 GMT</pubDate>
+      <author>simar</author>
+    </item>
     <item>
       <title>meaning of ((my name))</title>
       <link>https://laguna-dream.github.io/writing/simar.html</link>
@@ -17,7 +25,6 @@
       <pubDate>Fri, 22 May 2026 19:21:39 GMT</pubDate>
       <author>simar</author>
     </item>
-
     <item>
       <title>Perfume</title>
       <link>https://laguna-dream.github.io/writing/perfume.html</link>
