@@ -2,9 +2,18 @@
 // Add more tracks here as they come in.
 (function () {
     const PLAYLIST = [
+
+        {
+            videoId: 'Ob_EDY9Eiis', title: 'WannaCry', artist: 'Ninajirachi & Porter Robinson'
+        },
+        {
+            videoId: 'ahUZL4-MrG8', title: 'Unforgiving Girl ', artist: 'car seat headrest'
+        },
+
+        { videoId: 'fSRTHbtlLFc', title: 'The Rest is Noise', artist: 'Jamie xx' },
         { videoId: 'ru243ylmkYY', title: 'Disappear', artist: 'Stray Dogg' },
-        { videoId: '5n4fcAR8zZ8', title: 'Headache - The Party that Never Ends', artist: 'PLZ Make It Ruins' },
-        { videoId: 'F4GZ6BbZMAU', title: 'When I Grow Up', artist: 'First Aid Kit' }
+        { videoId: '5n4fcAR8zZ8', title: 'Headache - The Party that Never Ends' },
+        { videoId: 'F4GZ6BbZMAU', title: 'When I Grow Up', artist: 'First Aid Kit' },
     ];
 
     const STORE_KEY = 'laguna-player';
@@ -160,7 +169,7 @@
         const chars = 'abcdefghijklmnopqrstuvwxyz';
 
         if (document.fonts && document.fonts.load) {
-            try { await document.fonts.load("20px 'Hibiscus'"); } catch {}
+            try { await document.fonts.load("20px 'Hibiscus'"); } catch { }
         }
 
         const charWidth = measureGlyphWidth();
@@ -218,7 +227,7 @@
         });
     }
 
-    function save(state) { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} }
+    function save(state) { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch { } }
     function loadSaved() { try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch { return null; } }
 
     function init() {
